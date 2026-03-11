@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>AI Dashboard</title>
+
+<link rel="stylesheet" href="/static/style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<h2>AI Insights</h2>
+
+<a href="/">Upload</a>
+<a href="#">Dashboard</a>
+<a href="/predict">Prediction</a>
+
+</div>
+
+<div class="main">
+
+<h1>AI Powered Data Dashboard</h1>
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Rows</h3>
+<p>{{rows}}</p>
+</div>
+
+<div class="card">
+<h3>Total Columns</h3>
+<p>{{cols}}</p>
+</div>
+
+<div class="card">
+<h3>Null Values</h3>
+<p>{{null_values}}</p>
+</div>
+
+<div class="card">
+<h3>Duplicate Rows</h3>
+<p>{{duplicates}}</p>
+</div>
+
+<div class="card">
+<h3>AI Status</h3>
+<p>Active</p>
+</div>
+
+</div>
+
+<!-- Charts Section -->
+
+<div class="charts">
+
+<div class="chart-box">
+<h3>Bar Chart</h3>
+<canvas id="chart1"></canvas>
+</div>
+
+<div class="chart-box">
+<h3>Pie Chart</h3>
+<canvas id="chart2"></canvas>
+</div>
+
+<div class="chart-box">
+<h3>Line Chart</h3>
+<canvas id="chart3"></canvas>
+</div>
+
+<div class="chart-box">
+<h3>Comparison Chart</h3>
+<canvas id="chart4"></canvas>
+</div>
+
+</div>
+
+<!-- Dataset Summary -->
+
+<div class="chart-box" style="margin-top:40px;">
+
+<h2>Dataset Statistical Summary</h2>
+
+{{describe_table | safe}}
+
+</div>
+
+<!-- Automated Insights -->
+
+<div class="chart-box" style="margin-top:40px;">
+
+<h2>Automated Insights</h2>
+
+<ul>
+
+{% for insight in insights %}
+
+<li>{{insight}}</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+<!-- AI Recommendations -->
+
+<div class="chart-box" style="margin-top:40px;">
+
+<h2>AI Recommendations</h2>
+
+<ul>
+
+{% for rec in recommendations %}
+
+<li>{{rec}}</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+</div>
+
+<script>
+
+const labels = {{labels | tojson}}
+const values = {{values | tojson}}
+
+/* Bar Chart */
+
+new Chart(document.getElementById('chart1'),{
+type:'bar',
+data:{
+labels:labels,
+datasets:[{
+label:'Dataset Insights',
+data:values
+}]
+}
+})
+
+/* Pie Chart */
+
+new Chart(document.getElementById('chart2'),{
+type:'pie',
+data:{
+labels:labels,
+datasets:[{
+data:values
+}]
+}
+})
+
+/* Line Chart */
+
+new Chart(document.getElementById('chart3'),{
+type:'line',
+data:{
+labels:labels,
+datasets:[{
+label:'Trend',
+data:values
+}]
+}
+})
+
+/* Horizontal Chart */
+
+new Chart(document.getElementById('chart4'),{
+type:'bar',
+data:{
+labels:labels,
+datasets:[{
+label:'Comparison',
+data:values
+}]
+},
+options:{
+indexAxis:'y'
+}
+})
+
+</script>
+
+</body>
+
+</html>
