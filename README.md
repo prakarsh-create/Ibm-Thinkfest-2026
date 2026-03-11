@@ -5,7 +5,7 @@ The AI Data Insight Dashboard is a web application that enables users to upload 
 
 🛠️ Technologies Used
 
-Frontend: HTML, CSS, JavaScript, React
+Frontend: HTML, CSS, JavaScript
 
 Backend: Python (Flask)
 
