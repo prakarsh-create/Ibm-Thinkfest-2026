@@ -1,4 +1,4 @@
-# Ibm-Thinkfest-2026
+# Inaighty Project Ibm-Thinkfest-2026
 📊 Project Overview
 
 The AI Data Insight Dashboard is a web application that enables users to upload datasets, visualize insights, and make AI-powered predictions. It helps users analyze data quickly and gain actionable insights through interactive charts and dashboards.
@@ -14,6 +14,8 @@ Data Visualization: Chart.js
 AI/ML Libraries: Pandas, NumPy, Scikit-learn
 
 ⚡ Features
+
+Login Page (Use Password username-admin,password-password)
 
 Upload CSV or Excel datasets for analysis
 
