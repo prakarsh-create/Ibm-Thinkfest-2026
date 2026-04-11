@@ -1,304 +1,501 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dataset Dashboard</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
-
+<title>Dashboard — Insightify</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-/* CARD HOVER + CLICK */
-
-.overview-card{
-    position: relative;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    transition: transform 0.3s;
-    cursor: pointer;
+:root {
+  --bg: #050918;
+  --sidebar-bg: #07091f;
+  --surface: rgba(255,255,255,0.04);
+  --surface-hover: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.07);
+  --cyan: #00e5ff;
+  --blue: #3b7dff;
+  --purple: #9b5de5;
+  --green: #22c55e;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --text: #e8ecf4;
+  --muted: #7a849e;
+  --sidebar-w: 240px;
 }
 
-.overview-card:hover{
-    transform: translateY(-5px);
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  display: flex;
+  min-height: 100vh;
 }
 
-.card-detail{
-    position:absolute;
-    bottom:-80px;
-    left:0;
-    width:100%;
-    background:#111827;
-    color:white;
-    padding:10px;
-    border-radius:8px;
-    font-size:14px;
-    opacity:0;
-    transition:0.3s;
+/* ── Background ── */
+.bg-mesh {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 40% at 75% 15%, rgba(59,125,255,0.09) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 15% 80%, rgba(155,93,229,0.07) 0%, transparent 60%);
+}
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 60px 60px;
 }
 
-.overview-card:hover .card-detail{
-    opacity:1;
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sidebar-w);
+  height: 100vh;
+  position: fixed; left: 0; top: 0; z-index: 50;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: 28px 20px;
 }
 
-/* COLUMN ANALYSIS CARD */
+.sidebar-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.3rem; font-weight: 800;
+  color: var(--text); margin-bottom: 40px;
+  padding: 0 8px; letter-spacing: -0.5px;
+}
+.sidebar-logo span { color: var(--cyan); }
 
-.analysis-card{
-    background:white;
-    padding:40px;
-    width:380px;
-    border-radius:12px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.08);
-    text-align:center;
+.sidebar-label {
+  font-size: 0.68rem; font-weight: 600;
+  color: var(--muted); letter-spacing: 1.8px;
+  text-transform: uppercase;
+  padding: 0 10px; margin: 0 0 8px;
 }
 
-.analysis-card h2{
-    margin-bottom:25px;
-    color:#333;
-    font-weight:600;
+.sidebar-nav { list-style: none; margin-bottom: 28px; }
+.sidebar-nav a {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--muted); text-decoration: none;
+  font-size: 0.88rem; font-weight: 500;
+  padding: 9px 12px; border-radius: 10px;
+  transition: all 0.2s; margin-bottom: 2px;
+}
+.sidebar-nav a:hover { background: var(--surface-hover); color: var(--text); }
+.sidebar-nav a.active { background: rgba(0,229,255,0.07); color: var(--cyan); }
+.nav-icon { font-size: 0.95rem; width: 18px; text-align: center; flex-shrink: 0; }
+
+.sidebar-footer {
+  margin-top: auto;
+  background: rgba(0,229,255,0.05);
+  border: 1px solid rgba(0,229,255,0.15);
+  border-radius: 12px; padding: 14px 14px;
+}
+.status-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); flex-shrink: 0;
+  animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.sidebar-footer strong { font-size: 0.85rem; color: var(--green); }
+.sidebar-footer p { font-size: 0.78rem; color: var(--muted); padding-left: 15px; }
+
+/* ── Main ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1; min-height: 100vh;
+  padding: 44px 40px;
+  position: relative; z-index: 1;
+  max-width: 1200px;
 }
 
-/* SELECT */
+/* ── Page header ── */
+.page-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 40px;
+}
+.eyebrow {
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--cyan); margin-bottom: 8px;
+}
+.page-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 2rem; font-weight: 800; letter-spacing: -0.8px;
+}
+.page-title span {
+  background: linear-gradient(135deg, var(--cyan), var(--blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.page-sub { color: var(--muted); font-size: 0.88rem; margin-top: 6px; line-height: 1.6; }
 
-.select-box{
-    width:100%;
-    padding:12px;
-    border-radius:8px;
-    border:1px solid #ddd;
-    font-size:15px;
-    outline:none;
-    transition:0.3s;
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(59,125,255,0.08);
+  border: 1px solid rgba(59,125,255,0.3);
+  color: #7da7ff; text-decoration: none;
+  padding: 10px 20px; border-radius: 10px;
+  font-size: 0.85rem; font-weight: 600;
+  transition: all 0.2s; white-space: nowrap; flex-shrink: 0; margin-left: 24px;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-outline:hover { background: rgba(59,125,255,0.16); border-color: var(--blue); }
+
+/* ── Overview cards ── */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px; margin-bottom: 36px;
 }
 
-.select-box:focus{
-    border-color:#4f6df5;
-    box-shadow:0 0 6px rgba(79,109,245,0.2);
+.overview-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 24px 20px;
+  cursor: pointer; transition: all 0.3s;
+  position: relative; overflow: hidden;
+}
+.overview-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  opacity: 0; transition: opacity 0.3s;
+}
+.overview-card:nth-child(1)::after { background: var(--cyan); }
+.overview-card:nth-child(2)::after { background: var(--blue); }
+.overview-card:nth-child(3)::after { background: var(--purple); }
+.overview-card:nth-child(4)::after { background: var(--amber); }
+
+.overview-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.12); }
+.overview-card:hover::after { opacity: 1; }
+
+.card-label {
+  font-size: 0.73rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--muted); margin-bottom: 10px;
+}
+.card-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 2.2rem; font-weight: 800; letter-spacing: -1.5px;
+}
+.overview-card:nth-child(1) .card-value { color: var(--cyan); }
+.overview-card:nth-child(2) .card-value { color: var(--blue); }
+.overview-card:nth-child(3) .card-value { color: var(--purple); }
+.overview-card:nth-child(4) .card-value { color: var(--amber); }
+
+.card-hint {
+  font-size: 0.78rem; color: var(--muted); margin-top: 8px;
+  display: flex; align-items: center; gap: 5px;
+}
+.card-hint::before { content: '↓'; font-size: 0.65rem; }
+
+/* ── Section wrapper ── */
+.data-section {
+  margin-bottom: 28px;
 }
 
-/* BUTTON */
+.section-head {
+  display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px;
+}
+.section-head h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem; font-weight: 700; letter-spacing: -0.3px;
+}
+.section-head p { font-size: 0.83rem; color: var(--muted); }
 
-.analyze-btn{
-    margin-top:20px;
-    width:100%;
-    padding:12px;
-    background:#4f6df5;
-    color:white;
-    border:none;
-    border-radius:8px;
-    font-size:16px;
-    font-weight:500;
-    cursor:pointer;
-    transition:0.3s;
+/* ── Table card ── */
+.table-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  position: relative;
+}
+.table-card::before {
+  content: '';
+  position: absolute; top: 0; left: 32px; right: 32px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,229,255,0.25), transparent);
+}
+.table-wrap { overflow-x: auto; }
+
+/* Override pandas-generated table */
+.table-card table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.83rem; min-width: 500px;
+}
+.table-card table thead th {
+  background: rgba(255,255,255,0.04) !important;
+  color: var(--muted) !important;
+  padding: 12px 16px !important;
+  text-align: left !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important; letter-spacing: 0.6px !important;
+  text-transform: uppercase !important;
+  border-bottom: 1px solid var(--border) !important;
+  border-right: none !important; border-left: none !important;
+  white-space: nowrap !important;
+}
+.table-card table tbody td {
+  padding: 10px 16px !important;
+  border-bottom: 1px solid var(--border) !important;
+  border-right: none !important; border-left: none !important;
+  color: var(--text) !important; white-space: nowrap !important;
+  background: transparent !important;
+}
+.table-card table tbody tr:last-child td { border-bottom: none !important; }
+.table-card table tbody tr:hover td { background: rgba(255,255,255,0.025) !important; }
+
+/* ── Missing values ── */
+.missing-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 6px 0;
+  position: relative; overflow: hidden;
+}
+.missing-card::before {
+  content: '';
+  position: absolute; top: 0; left: 32px; right: 32px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(245,158,11,0.3), transparent);
+}
+.missing-card ul { list-style: none; }
+.missing-card li {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.88rem;
+}
+.missing-card li:last-child { border-bottom: none; }
+.missing-card li span { color: var(--muted); }
+.missing-card li strong {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700; font-size: 1rem; color: var(--amber);
 }
 
-.analyze-btn:hover{
-    background:#3b55d4;
-    transform:translateY(-2px);
+.missing-empty {
+  padding: 28px 24px; text-align: center; color: var(--muted); font-size: 0.88rem;
 }
-.dashboard{
-display:flex;
-height:100vh;
+.missing-empty .check { font-size: 1.4rem; margin-bottom: 6px; color: var(--green); }
+
+/* ── Column Analysis ── */
+.analysis-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px;
+  max-width: 480px;
+  position: relative; overflow: hidden;
+}
+.analysis-wrap::before {
+  content: '';
+  position: absolute; top: 0; left: 32px; right: 32px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(155,93,229,0.35), transparent);
 }
 
-.sidebar{
-width:220px;
-background:#111827;
-color:white;
-padding:30px 20px;
+.select-box {
+  width: 100%; padding: 12px 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 0.9rem; font-family: 'DM Sans', sans-serif;
+  outline: none; transition: all 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a849e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+  padding-right: 40px;
+}
+.select-box:focus { border-color: rgba(155,93,229,0.5); box-shadow: 0 0 0 3px rgba(155,93,229,0.1); }
+.select-box option { background: #0d1021; }
+
+.analyze-btn {
+  margin-top: 16px; width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  border: none; color: white;
+  border-radius: 10px;
+  font-size: 0.95rem; font-weight: 700;
+  font-family: 'Syne', sans-serif; cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.3s;
+}
+.analyze-btn:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 10px 30px rgba(155,93,229,0.3); }
+
+/* Fade-in animation */
+.data-section {
+  animation: fadeUp 0.5s ease both;
+}
+.data-section:nth-child(2) { animation-delay: 0.05s; }
+.data-section:nth-child(3) { animation-delay: 0.1s; }
+.data-section:nth-child(4) { animation-delay: 0.15s; }
+.data-section:nth-child(5) { animation-delay: 0.2s; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.sidebar h2{
-margin-bottom:30px;
-}
-
-.sidebar ul{
-list-style:none;
-}
-
-.sidebar ul li{
-margin:15px 0;
-}
-
-.sidebar ul li a{
-color:white;
-text-decoration:none;
-font-size:16px;
-}
-
-.sidebar ul li a:hover{
-color:#3b82f6;
-}
-
-.main-content{
-flex:1;
-padding:40px;
-background:#f3f4f6;
-overflow-y:auto;
+@media (max-width: 1100px) { .overview-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 700px) {
+  .main { padding: 24px 20px; }
+  .overview-grid { grid-template-columns: 1fr 1fr; }
+  .page-header { flex-direction: column; gap: 16px; }
 }
 </style>
 </head>
-
 <body>
-  
 
-<main class="dashboard-shell">
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
 
-<header class="dashboard-header">
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">Insight<span>ify</span></div>
 
-<div>
-<p class="eyebrow">Automated analytics</p>
-<h1>Dataset Insights</h1>
-<p class="muted">
-Upload a file to get a live preview, summary statistics, and quality checks.
-</p>
-</div>
+  <div class="sidebar-label">Navigate</div>
+  <ul class="sidebar-nav">
+    <li><a href="{{ url_for('index') }}"><span class="nav-icon">🏠</span> Upload</a></li>
+    <li><a href="#" class="active"><span class="nav-icon">📊</span> Dashboard</a></li>
+  </ul>
 
-<a class="btn-outline" href="{{ url_for('index') }}">
-Run another dataset
-</a>
+  <div class="sidebar-label">Jump To</div>
+  <ul class="sidebar-nav">
+    <li><a href="#preview-section"  onclick="smooth(event,'preview-section')"><span class="nav-icon">👁</span> Preview</a></li>
+    <li><a href="#summary-section"  onclick="smooth(event,'summary-section')"><span class="nav-icon">📋</span> Summary</a></li>
+    <li><a href="#missing-section"  onclick="smooth(event,'missing-section')"><span class="nav-icon">⚠️</span> Missing Values</a></li>
+    <li><a href="#column-section"   onclick="smooth(event,'column-section')"><span class="nav-icon">🔍</span> Column Analysis</a></li>
+  </ul>
 
-</header>
+  <div class="sidebar-footer">
+    <div class="status-row">
+      <span class="dot"></span>
+      <strong>Analysis Ready</strong>
+    </div>
+    <p>Dataset loaded</p>
+  </div>
+</aside>
 
+<!-- ── Main ── -->
+<main class="main">
 
-<!-- OVERVIEW CARDS -->
+  <!-- Header -->
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Automated Analytics</p>
+      <h1 class="page-title">Dataset <span>Insights</span></h1>
+      <p class="page-sub">Live preview, summary statistics, and quality checks for your dataset.</p>
+    </div>
+    <a class="btn-outline" href="{{ url_for('index') }}">← Run another dataset</a>
+  </header>
 
-<section class="overview-grid">
+  <!-- Overview Cards -->
+  <div class="overview-grid">
+    <article class="overview-card" onclick="scrollToSection('preview-section')">
+      <p class="card-label">Total Rows</p>
+      <p class="card-value">{{ rows }}</p>
+      <p class="card-hint">View dataset preview</p>
+    </article>
 
-<article class="overview-card" onclick="scrollToSection('preview-section')">
-<p class="label">Total Rows</p>
-<p class="value">{{ rows }}</p>
-<p class="muted">Click to view dataset preview</p>
-</article>
+    <article class="overview-card" onclick="scrollToSection('column-section')">
+      <p class="card-label">Total Columns</p>
+      <p class="card-value">{{ columns }}</p>
+      <p class="card-hint">Analyze columns</p>
+    </article>
 
-<article class="overview-card" onclick="scrollToSection('column-section')">
-<p class="label">Total Columns</p>
-<p class="value">{{ columns }}</p>
-<p class="muted">Click to analyze columns</p>
-</article>
+    <article class="overview-card" onclick="scrollToSection('preview-section')">
+      <p class="card-label">Previewed Rows</p>
+      <p class="card-value">5</p>
+      <p class="card-hint">See dataset preview</p>
+    </article>
 
-<article class="overview-card" onclick="scrollToSection('preview-section')">
-<p class="label">Previewed Rows</p>
-<p class="value">5</p>
-<p class="muted">Click to see dataset preview</p>
-</article>
-
-<article class="overview-card" onclick="scrollToSection('missing-section')">
-<p class="label">Missing Columns</p>
-<p class="value">{{ missing | length }}</p>
-<p class="muted">Click to view missing values</p>
-</article>
-
-</section>
-
-
-<!-- PREVIEW SECTION -->
-
-<section class="data-section" id="preview-section">
-
-<div class="data-section__title">
-<h2>Preview</h2>
-<p class="muted">First five rows of your uploaded file</p>
-</div>
-
-<div class="table-card preview-table">
-{{ head | safe }}
-</div>
-
-</section>
-
-
-<!-- SUMMARY SECTION -->
-
-<section class="data-section" id="summary-section">
-
-<div class="data-section__title">
-<h2>Summary</h2>
-<p class="muted">
-Descriptive statistics computed by pandas describe()
-</p>
-</div>
-
-<div class="table-card summary-table">
-{{ summary | safe }}
-</div>
-
-</section>
+    <article class="overview-card" onclick="scrollToSection('missing-section')">
+      <p class="card-label">Missing Columns</p>
+      <p class="card-value">{{ missing | length }}</p>
+      <p class="card-hint">View missing values</p>
+    </article>
+  </div>
 
 
-<!-- MISSING VALUES SECTION -->
-
-<section class="data-section" id="missing-section">
-
-<div class="data-section__title">
-<h2>Missing Values</h2>
-<p class="muted">Counts of null values per column</p>
-</div>
-
-<div class="missing-card">
-<ul>
-
-{% for col, val in missing.items() %}
-<li>
-<span>{{ col }}</span>
-<strong>{{ val }}</strong>
-</li>
-{% endfor %}
-
-</ul>
-</div>
-
-</section>
+  <!-- Preview -->
+  <section class="data-section" id="preview-section">
+    <div class="section-head">
+      <h2>👁 Preview</h2>
+      <p>First five rows of your uploaded file</p>
+    </div>
+    <div class="table-card">
+      <div class="table-wrap">{{ head | safe }}</div>
+    </div>
+  </section>
 
 
-<!-- COLUMN ANALYSIS -->
+  <!-- Summary -->
+  <section class="data-section" id="summary-section">
+    <div class="section-head">
+      <h2>📋 Summary</h2>
+      <p>Descriptive statistics from pandas describe()</p>
+    </div>
+    <div class="table-card">
+      <div class="table-wrap">{{ summary | safe }}</div>
+    </div>
+  </section>
 
-<section class="data-section" id="column-section">
 
-<div class="data-section__title">
-<h2>Column Analysis</h2>
-<p class="muted">Select a column to analyze</p>
-</div>
+  <!-- Missing Values -->
+  <section class="data-section" id="missing-section">
+    <div class="section-head">
+      <h2>⚠️ Missing Values</h2>
+      <p>Null value counts per column</p>
+    </div>
+    <div class="missing-card">
+      {% if missing %}
+        <ul>
+          {% for col, val in missing.items() %}
+          <li>
+            <span>{{ col }}</span>
+            <strong>{{ val }}</strong>
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="missing-empty">
+          <div class="check">✓</div>
+          No missing values — your dataset is clean!
+        </div>
+      {% endif %}
+    </div>
+  </section>
 
-<div class="analysis-card">
 
-<h2>Select Column for Analysis</h2>
-
-<form action="/analyze" method="post">
-
-<select name="column" class="select-box">
-
-{% for col in cols %}
-<option value="{{ col }}">{{ col }}</option>
-{% endfor %}
-
-</select>
-
-<button type="submit" class="analyze-btn">
-Analyze
-</button>
-
-</form>
-
-</div>
-
-</section>
+  <!-- Column Analysis -->
+  <section class="data-section" id="column-section">
+    <div class="section-head">
+      <h2>🔍 Column Analysis</h2>
+      <p>Select a column to drill down</p>
+    </div>
+    <div class="analysis-wrap">
+      <form action="/analyze" method="post">
+        <select name="column" class="select-box">
+          {% for col in cols %}
+          <option value="{{ col }}">{{ col }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="analyze-btn">Analyze Column →</button>
+      </form>
+    </div>
+  </section>
 
 </main>
 
-
-<!-- SMOOTH SCROLL SCRIPT -->
-
 <script>
-
-function scrollToSection(sectionId){
-document.getElementById(sectionId).scrollIntoView({
-behavior:"smooth"
-});
+function scrollToSection(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-
+function smooth(e, id) {
+  e.preventDefault();
+  scrollToSection(id);
+}
 </script>
 
 </body>
 </html>
-```

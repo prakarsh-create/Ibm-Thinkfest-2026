@@ -1,105 +1,95 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Column Analysis</title>
 
-<title>Column Analysis</title>
+    <style>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        body{
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin:0;
+            padding:0;
+        }
 
-<style>
+        .container{
+            width:600px;
+            margin:80px auto;
+            background:white;
+            padding:30px;
+            border-radius:10px;
+            box-shadow:0 5px 15px rgba(0,0,0,0.1);
+            text-align:center;
+        }
 
-/* Page Layout */
-body{
-    font-family:'Poppins', sans-serif;
-    background:#f4f6fb;
-    margin:0;
-    padding:40px;
-}
+        h1{
+            color:#333;
+        }
 
-/* Page Title */
-.title{
-    text-align:center;
-    margin-bottom:40px;
-}
+        .stats{
+            margin-top:30px;
+        }
 
-.title h2{
-    color:#333;
-    font-weight:600;
-}
+        .card{
+            background:#f9fafc;
+            padding:15px;
+            margin:10px 0;
+            border-radius:8px;
+            font-size:18px;
+        }
 
-/* Card Container */
-.analysis-container{
-    max-width:900px;
-    margin:auto;
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
-    gap:20px;
-}
+        .back-btn{
+            margin-top:25px;
+            padding:10px 20px;
+            background:#007bff;
+            color:white;
+            border:none;
+            border-radius:5px;
+            text-decoration:none;
+        }
 
-/* Individual Cards */
-.stat-card{
-    background:white;
-    padding:25px;
-    border-radius:12px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.08);
-    text-align:center;
-    transition:0.3s;
-}
+        .back-btn:hover{
+            background:#0056b3;
+        }
 
-/* Hover effect */
-.stat-card:hover{
-    transform:translateY(-5px);
-}
-
-/* Label */
-.stat-label{
-    font-size:14px;
-    color:#777;
-    margin-bottom:10px;
-}
-
-/* Value */
-.stat-value{
-    font-size:26px;
-    font-weight:600;
-    color:#4f6df5;
-}
-
-</style>
+    </style>
 
 </head>
 
 <body>
 
-<div class="title">
-<h2>Column Analysis: {{ column }}</h2>
-</div>
+<div class="container">
 
-<div class="analysis-container">
+    <h1>Column Analysis</h1>
 
-<div class="stat-card">
-<div class="stat-label">Mean</div>
-<div class="stat-value">{{ mean }}</div>
-</div>
+    <h2>{{ column }}</h2>
 
-<div class="stat-card">
-<div class="stat-label">Median</div>
-<div class="stat-value">{{ median }}</div>
-</div>
+    <div class="stats">
 
-<div class="stat-card">
-<div class="stat-label">Maximum</div>
-<div class="stat-value">{{ maximum }}</div>
-</div>
+        <div class="card">
+            <strong>Mean:</strong> {{ mean }}
+        </div>
 
-<div class="stat-card">
-<div class="stat-label">Minimum</div>
-<div class="stat-value">{{ minimum }}</div>
-</div>
+        <div class="card">
+            <strong>Median:</strong> {{ median }}
+        </div>
+
+        <div class="card">
+            <strong>Maximum:</strong> {{ maximum }}
+        </div>
+
+        <div class="card">
+            <strong>Minimum:</strong> {{ minimum }}
+        </div>
+
+    </div>
+
+    <a href="/index" class="back-btn">Back to Dashboard</a>
 
 </div>
 
 </body>
 </html>
+```

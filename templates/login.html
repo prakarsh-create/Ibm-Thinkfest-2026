@@ -3,245 +3,457 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Insightfy Login</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+<title>Login — Insightify</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
+:root {
+  --bg: #050918;
+  --surface: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --border-focus: rgba(0,229,255,0.45);
+  --cyan: #00e5ff;
+  --blue: #3b7dff;
+  --purple: #9b5de5;
+  --green: #22c55e;
+  --text: #e8ecf4;
+  --muted: #7a849e;
 }
 
-body{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-background: linear-gradient(135deg,#4f46e5,#3b82f6,#06b6d4);
+html, body { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  overflow: hidden;
 }
 
-/* Login Card */
-
-.login-card{
-width:380px;
-background: rgba(255,255,255,0.15);
-backdrop-filter: blur(10px);
-padding:40px;
-border-radius:16px;
-box-shadow:0 10px 40px rgba(0,0,0,0.2);
-color:white;
+/* ── Animated background ── */
+.bg-mesh {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 60% at 15% 20%, rgba(59,125,255,0.13) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 80%, rgba(155,93,229,0.11) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(0,229,255,0.04) 0%, transparent 70%);
 }
 
-/* Logo */
-
-.logo{
-text-align:center;
-font-size:28px;
-font-weight:600;
-margin-bottom:10px;
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
 }
 
-.subtitle{
-text-align:center;
-font-size:14px;
-margin-bottom:30px;
-opacity:0.8;
+/* Floating orbs */
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(80px); pointer-events: none; z-index: 0;
+  animation: drift 12s ease-in-out infinite alternate;
+}
+.orb-1 {
+  width: 400px; height: 400px;
+  background: rgba(59,125,255,0.07);
+  top: -100px; left: -100px;
+}
+.orb-2 {
+  width: 300px; height: 300px;
+  background: rgba(155,93,229,0.07);
+  bottom: -80px; right: -80px;
+  animation-delay: -6s;
 }
 
-/* Input Group */
-
-.input-group{
-position:relative;
-margin-bottom:20px;
+@keyframes drift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(30px, 20px) scale(1.05); }
 }
 
-.input-group input{
-width:100%;
-padding:12px 40px;
-border:none;
-border-radius:8px;
-outline:none;
-font-size:14px;
+/* ── Split layout ── */
+.page-wrap {
+  position: relative; z-index: 1;
+  display: flex;
+  width: 900px; max-width: 95vw;
+  min-height: 540px;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+  animation: fadeUp 0.7s ease both;
 }
 
-.input-group i{
-position:absolute;
-left:12px;
-top:50%;
-transform:translateY(-50%);
-color:#555;
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(28px); }
+  to   { opacity:1; transform: translateY(0); }
 }
 
-.toggle-password{
-position:absolute;
-right:12px;
-top:50%;
-transform:translateY(-50%);
-cursor:pointer;
+/* ── Left panel ── */
+.left-panel {
+  width: 42%;
+  background: linear-gradient(145deg, rgba(59,125,255,0.15), rgba(155,93,229,0.1));
+  border-right: 1px solid var(--border);
+  padding: 52px 40px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  position: relative; overflow: hidden;
 }
 
-/* Remember */
-
-.options{
-display:flex;
-justify-content:space-between;
-font-size:13px;
-margin-bottom:20px;
+.left-panel::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 20% 80%, rgba(0,229,255,0.06), transparent 70%);
 }
 
-.options a{
-color:#fff;
-text-decoration:none;
+.brand { position: relative; z-index: 1; }
+.brand-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.8rem; font-weight: 800;
+  letter-spacing: -0.5px; color: var(--text);
+}
+.brand-logo span { color: var(--cyan); }
+
+.brand-tag {
+  display: inline-block; margin-top: 10px;
+  background: rgba(0,229,255,0.08);
+  border: 1px solid rgba(0,229,255,0.2);
+  color: var(--cyan);
+  padding: 4px 12px; border-radius: 20px;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
-/* Login Button */
+.left-features { position: relative; z-index: 1; }
 
-.login-btn{
-width:100%;
-padding:12px;
-border:none;
-border-radius:8px;
-background:#fff;
-color:#4f46e5;
-font-weight:600;
-cursor:pointer;
-transition:0.3s;
+.feature-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  margin-bottom: 22px;
 }
 
-.login-btn:hover{
-transform:translateY(-2px);
-box-shadow:0 5px 15px rgba(0,0,0,0.2);
+.feature-icon {
+  width: 36px; height: 36px; flex-shrink: 0;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
 }
+
+.feature-text strong {
+  display: block;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.88rem; font-weight: 700;
+  margin-bottom: 2px;
+}
+.feature-text p { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+.left-footer {
+  position: relative; z-index: 1;
+  font-size: 0.75rem; color: var(--muted);
+}
+
+/* ── Right panel (form) ── */
+.right-panel {
+  flex: 1;
+  background: rgba(5,9,24,0.97);
+  padding: 52px 44px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+
+.form-header { margin-bottom: 36px; }
+
+.form-header h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.7rem; font-weight: 800;
+  letter-spacing: -0.5px; margin-bottom: 6px;
+}
+
+.form-header h2 span {
+  background: linear-gradient(135deg, var(--cyan), var(--blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.form-header p { font-size: 0.85rem; color: var(--muted); }
+
+/* Input */
+.input-group {
+  margin-bottom: 18px;
+}
+
+.input-label {
+  display: block;
+  font-size: 0.75rem; font-weight: 600;
+  color: var(--muted); letter-spacing: 0.8px;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+
+.input-wrap {
+  position: relative;
+}
+
+.input-wrap .icon {
+  position: absolute; left: 14px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.9rem; pointer-events: none;
+  opacity: 0.6;
+}
+
+.input-wrap input {
+  width: 100%;
+  padding: 13px 44px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 0.9rem; font-family: 'DM Sans', sans-serif;
+  outline: none; transition: all 0.25s;
+}
+
+.input-wrap input::placeholder { color: var(--muted); }
+
+.input-wrap input:focus {
+  border-color: var(--border-focus);
+  background: rgba(0,229,255,0.03);
+  box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+}
+
+.eye-btn {
+  position: absolute; right: 14px; top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none;
+  cursor: pointer; font-size: 0.95rem; opacity: 0.5;
+  transition: opacity 0.2s; padding: 0;
+  color: var(--muted);
+}
+.eye-btn:hover { opacity: 1; }
+
+/* Options row */
+.options-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 24px; font-size: 0.82rem;
+}
+
+.remember {
+  display: flex; align-items: center; gap: 8px;
+  color: var(--muted); cursor: pointer;
+}
+
+.remember input[type="checkbox"] {
+  width: 15px; height: 15px;
+  accent-color: var(--cyan);
+  cursor: pointer;
+}
+
+.forgot-link {
+  color: var(--cyan); text-decoration: none;
+  font-size: 0.82rem; font-weight: 500; transition: opacity 0.2s;
+}
+.forgot-link:hover { opacity: 0.7; }
+
+/* Submit button */
+.login-btn {
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, var(--blue), var(--cyan));
+  border: none; border-radius: 10px;
+  color: #050918; font-size: 0.95rem;
+  font-weight: 800; font-family: 'Syne', sans-serif;
+  cursor: pointer; letter-spacing: 0.3px;
+  transition: all 0.3s; position: relative; overflow: hidden;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(0,229,255,0.28);
+}
+
+.login-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.btn-inner { display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+.spinner {
+  display: none; width: 16px; height: 16px;
+  border: 2px solid rgba(5,9,24,0.3);
+  border-top-color: #050918;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* Divider */
-
-.divider{
-text-align:center;
-margin:20px 0;
-font-size:13px;
-opacity:0.8;
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 22px 0; color: var(--muted); font-size: 0.78rem;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
 }
 
-/* Google Button */
+/* Google button */
+.google-btn {
+  width: 100%; padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 0.88rem; font-family: 'DM Sans', sans-serif;
+  font-weight: 500; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: all 0.2s;
+}
+.google-btn:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.15); }
 
-.google-btn{
-width:100%;
-padding:10px;
-border-radius:8px;
-border:none;
-background:#fff;
-cursor:pointer;
-font-size:14px;
+.google-icon {
+  width: 18px; height: 18px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.5 30.2 0 24 0 14.6 0 6.6 5.4 2.6 13.3l7.8 6.1C12.3 13.3 17.7 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z'/%3E%3Cpath fill='%2334A853' d='M10.4 28.6C10 27.4 9.8 26.2 9.8 25s.2-2.4.6-3.6l-7.8-6.1C.9 17.8 0 21.3 0 25s.9 7.2 2.6 10.2l7.8-6.6z'/%3E%3Cpath fill='%23FBBC05' d='M24 50c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.2-7.7 2.2-6.3 0-11.7-3.8-13.6-9.3l-7.8 6.6C6.6 44.6 14.6 50 24 50z'/%3E%3C/svg%3E") no-repeat center/contain;
 }
 
-/* Signup */
-
-.signup{
-text-align:center;
-margin-top:20px;
-font-size:14px;
+/* Sign up */
+.signup-row {
+  text-align: center; margin-top: 22px;
+  font-size: 0.83rem; color: var(--muted);
 }
-
-.signup a{
-color:#fff;
-font-weight:500;
-text-decoration:none;
+.signup-row a {
+  color: var(--cyan); text-decoration: none;
+  font-weight: 600; transition: opacity 0.2s;
 }
+.signup-row a:hover { opacity: 0.7; }
 
-/* Responsive */
-
-@media(max-width:450px){
-
-.login-card{
-width:90%;
-padding:30px;
+/* Mobile */
+@media (max-width: 680px) {
+  .left-panel { display: none; }
+  .right-panel { padding: 40px 28px; }
+  .page-wrap { width: 100%; min-height: 100vh; border-radius: 0; border: none; }
 }
-
-}
-
 </style>
-
 </head>
-
 <body>
 
-<div class="login-card">
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
 
-<div class="logo">Insightfy</div>
-<p class="subtitle">AI Data Analytics Platform</p>
+<div class="page-wrap">
 
-<form action="/login" method="POST">
+  <!-- Left branding panel -->
+  <div class="left-panel">
+    <div class="brand">
+      <div class="brand-logo">Insight<span>ify</span></div>
+      <span class="brand-tag">✦ AI Powered</span>
+    </div>
 
-<div class="input-group">
-<i>👤</i>
-<input type="text" name="username" placeholder="Username" required>
-</div>
+    <div class="left-features">
+      <div class="feature-item">
+        <div class="feature-icon">📊</div>
+        <div class="feature-text">
+          <strong>Smart Dashboard</strong>
+          <p>Auto-generated charts and visual insights from any dataset.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🤖</div>
+        <div class="feature-text">
+          <strong>AI Predictions</strong>
+          <p>Machine learning models for instant forecasting.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-text">
+          <strong>Instant Analysis</strong>
+          <p>Upload your data — get results in seconds.</p>
+        </div>
+      </div>
+    </div>
 
-<div class="input-group">
-<i>🔒</i>
-<input type="password" id="password" name="password" placeholder="Password" required>
-<span class="toggle-password" onclick="togglePassword()">👁</span>
-</div>
+    <div class="left-footer">© 2026 Insightify Project · IBM ThinkFest</div>
+  </div>
 
-<div class="options">
-<label><input type="checkbox"> Remember me</label>
-<a href="#">Forgot password?</a>
-</div>
+  <!-- Right form panel -->
+  <div class="right-panel">
+    <div class="form-header">
+      <h2>Welcome <span>back</span></h2>
+      <p>Sign in to continue to your analytics workspace</p>
+    </div>
 
-<button class="login-btn" id="loginBtn" type="submit">
-<span id="btnText">Login</span>
-<span id="loader" style="display:none;">⏳</span>
-</button>
+    <form action="/login" method="POST" id="loginForm">
 
-</form>
+      <div class="input-group">
+        <label class="input-label">Username</label>
+        <div class="input-wrap">
+          <span class="icon">👤</span>
+          <input type="text" name="username" placeholder="Enter your username" required>
+        </div>
+      </div>
 
-<div class="divider">or continue with</div>
+      <div class="input-group">
+        <label class="input-label">Password</label>
+        <div class="input-wrap">
+          <span class="icon">🔒</span>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+          <button type="button" class="eye-btn" onclick="togglePassword()" id="eyeBtn">👁</button>
+        </div>
+      </div>
 
-<button class="google-btn">Continue with Google</button>
+      <div class="options-row">
+        <label class="remember">
+          <input type="checkbox"> Remember me
+        </label>
+        <a href="#" class="forgot-link">Forgot password?</a>
+      </div>
 
-<div class="signup">
-Don't have an account? <a href="#">Sign up</a>
-</div>
+      <button type="submit" class="login-btn" id="loginBtn">
+        <span class="btn-inner">
+          <span class="spinner" id="spinner"></span>
+          <span id="btnText">Sign In</span>
+        </span>
+      </button>
+
+    </form>
+
+    <div class="divider">or continue with</div>
+
+    <button class="google-btn">
+      <span class="google-icon"></span>
+      Continue with Google
+    </button>
+
+    <div class="signup-row">
+      Don't have an account? <a href="#">Sign up free</a>
+    </div>
+  </div>
 
 </div>
 
 <script>
-
-function togglePassword(){
-
-let pass=document.getElementById("password");
-
-if(pass.type==="password"){
-pass.type="text";
-}
-else{
-pass.type="password";
+function togglePassword() {
+  const pass = document.getElementById('password');
+  const btn  = document.getElementById('eyeBtn');
+  if (pass.type === 'password') {
+    pass.type = 'text'; btn.textContent = '🙈';
+  } else {
+    pass.type = 'password'; btn.textContent = '👁';
+  }
 }
 
-}
-const form = document.querySelector("form");
-const btnText = document.getElementById("btnText");
-const loader = document.getElementById("loader");
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn     = document.getElementById('loginBtn');
+  const spinner = document.getElementById('spinner');
+  const text    = document.getElementById('btnText');
 
-form.addEventListener("submit", function(e){
+  btn.disabled       = true;
+  spinner.style.display = 'block';
+  text.textContent   = 'Signing in…';
 
-e.preventDefault();
-
-btnText.innerText = "Logging in...";
-loader.style.display = "inline";
-
-setTimeout(()=>{
-form.submit();
-},1500);
-
+  setTimeout(() => this.submit(), 1500);
 });
-
-
 </script>
 
 </body>
