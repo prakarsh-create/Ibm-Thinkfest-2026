@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Insightfy Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background: linear-gradient(135deg,#4f46e5,#3b82f6,#06b6d4);
+}
+
+/* Login Card */
+
+.login-card{
+width:380px;
+background: rgba(255,255,255,0.15);
+backdrop-filter: blur(10px);
+padding:40px;
+border-radius:16px;
+box-shadow:0 10px 40px rgba(0,0,0,0.2);
+color:white;
+}
+
+/* Logo */
+
+.logo{
+text-align:center;
+font-size:28px;
+font-weight:600;
+margin-bottom:10px;
+}
+
+.subtitle{
+text-align:center;
+font-size:14px;
+margin-bottom:30px;
+opacity:0.8;
+}
+
+/* Input Group */
+
+.input-group{
+position:relative;
+margin-bottom:20px;
+}
+
+.input-group input{
+width:100%;
+padding:12px 40px;
+border:none;
+border-radius:8px;
+outline:none;
+font-size:14px;
+}
+
+.input-group i{
+position:absolute;
+left:12px;
+top:50%;
+transform:translateY(-50%);
+color:#555;
+}
+
+.toggle-password{
+position:absolute;
+right:12px;
+top:50%;
+transform:translateY(-50%);
+cursor:pointer;
+}
+
+/* Remember */
+
+.options{
+display:flex;
+justify-content:space-between;
+font-size:13px;
+margin-bottom:20px;
+}
+
+.options a{
+color:#fff;
+text-decoration:none;
+}
+
+/* Login Button */
+
+.login-btn{
+width:100%;
+padding:12px;
+border:none;
+border-radius:8px;
+background:#fff;
+color:#4f46e5;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
+}
+
+.login-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Divider */
+
+.divider{
+text-align:center;
+margin:20px 0;
+font-size:13px;
+opacity:0.8;
+}
+
+/* Google Button */
+
+.google-btn{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:none;
+background:#fff;
+cursor:pointer;
+font-size:14px;
+}
+
+/* Signup */
+
+.signup{
+text-align:center;
+margin-top:20px;
+font-size:14px;
+}
+
+.signup a{
+color:#fff;
+font-weight:500;
+text-decoration:none;
+}
+
+/* Responsive */
+
+@media(max-width:450px){
+
+.login-card{
+width:90%;
+padding:30px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="login-card">
+
+<div class="logo">Insightfy</div>
+<p class="subtitle">AI Data Analytics Platform</p>
+
+<form action="/login" method="POST">
+
+<div class="input-group">
+<i>👤</i>
+<input type="text" name="username" placeholder="Username" required>
+</div>
+
+<div class="input-group">
+<i>🔒</i>
+<input type="password" id="password" name="password" placeholder="Password" required>
+<span class="toggle-password" onclick="togglePassword()">👁</span>
+</div>
+
+<div class="options">
+<label><input type="checkbox"> Remember me</label>
+<a href="#">Forgot password?</a>
+</div>
+
+<button class="login-btn" id="loginBtn" type="submit">
+<span id="btnText">Login</span>
+<span id="loader" style="display:none;">⏳</span>
+</button>
+
+</form>
+
+<div class="divider">or continue with</div>
+
+<button class="google-btn">Continue with Google</button>
+
+<div class="signup">
+Don't have an account? <a href="#">Sign up</a>
+</div>
+
+</div>
+
+<script>
+
+function togglePassword(){
+
+let pass=document.getElementById("password");
+
+if(pass.type==="password"){
+pass.type="text";
+}
+else{
+pass.type="password";
+}
+
+}
+const form = document.querySelector("form");
+const btnText = document.getElementById("btnText");
+const loader = document.getElementById("loader");
+
+form.addEventListener("submit", function(e){
+
+e.preventDefault();
+
+btnText.innerText = "Logging in...";
+loader.style.display = "inline";
+
+setTimeout(()=>{
+form.submit();
+},1500);
+
+});
+
+
+</script>
+
+</body>
+</html>

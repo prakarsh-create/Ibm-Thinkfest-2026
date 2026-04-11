@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insightify — AI Data Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ─── COLOUR SYSTEM ─────────────────────────────── */
+:root {
+  --primary:        #2563eb;
+  --primary-dark:   #1e40af;
+  --primary-light:  #eff6ff;
+  --primary-glow:   rgba(37,99,235,0.15);
+
+  --dark:           #0f172a;
+  --dark-2:         #1e293b;
+  --dark-3:         #334155;
+
+  --text:           #0f172a;
+  --text-muted:     #64748b;
+  --text-light:     #94a3b8;
+
+  --bg:             #f8fafc;
+  --surface:        #ffffff;
+  --border:         #e2e8f0;
+  --border-dark:    #cbd5e1;
+
+  --success:        #10b981;
+  --warning:        #f59e0b;
+  --danger:         #ef4444;
+
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  16px;
+  --radius-xl:  24px;
+
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg:  0 12px 40px rgba(0,0,0,0.1),  0 4px 12px rgba(0,0,0,0.05);
+
+  --font-display: 'Sora', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+}
+
+/* ─── RESET ─────────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* ─── NAVBAR ─────────────────────────────────────── */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 64px;
+  height: 64px;
+  background: var(--dark);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.logo span {
+  color: var(--primary);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-links a {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  transition: color 0.2s, background 0.2s;
+}
+
+.nav-links a:hover {
+  color: white;
+  background: rgba(255,255,255,0.07);
+}
+
+.nav-cta {
+  background: var(--primary) !important;
+  color: white !important;
+  padding: 7px 18px !important;
+}
+
+.nav-cta:hover {
+  background: var(--primary-dark) !important;
+}
+
+/* ─── HERO ───────────────────────────────────────── */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 64px;
+  padding: 96px 64px;
+  background: var(--dark);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -120px; right: -120px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: 30%;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(37,99,235,0.15);
+  border: 1px solid rgba(37,99,235,0.3);
+  color: #93c5fd;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 100px;
+  margin-bottom: 24px;
+}
+
+.badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #60a5fa;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: white;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+
+.hero-title .accent {
+  color: #60a5fa;
+}
+
+.hero-sub {
+  color: #94a3b8;
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 440px;
+  margin-bottom: 40px;
+}
+
+/* ─── UPLOAD ZONE ────────────────────────────────── */
+.upload-zone {
+  background: rgba(255,255,255,0.04);
+  border: 1.5px dashed rgba(255,255,255,0.2);
+  border-radius: var(--radius-lg);
+  padding: 36px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.25s, background 0.25s;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.upload-zone:hover,
+.upload-zone.dragover {
+  border-color: var(--primary);
+  background: rgba(37,99,235,0.08);
+}
+
+.upload-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.upload-icon {
+  width: 44px; height: 44px;
+  background: rgba(37,99,235,0.15);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+
+.upload-zone h3 {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.upload-zone p {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.upload-zone p span {
+  color: #60a5fa;
+  font-weight: 500;
+}
+
+.file-name {
+  color: var(--success);
+  font-size: 0.8rem;
+  margin-top: 8px;
+  font-weight: 500;
+  display: none;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 24px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(37,99,235,0.35);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.upload-formats {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.format-tag {
+  background: rgba(255,255,255,0.07);
+  color: #94a3b8;
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* ─── HERO VISUAL ────────────────────────────────── */
+.hero-visual {
+  position: relative;
+}
+
+.dashboard-mockup {
+  background: #1e293b;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+  box-shadow: 0 32px 64px rgba(0,0,0,0.5);
+  animation: float 5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.mockup-topbar {
+  background: #0f172a;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.mockup-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+
+.mockup-title {
+  color: #64748b;
+  font-size: 0.7rem;
+  margin-left: 8px;
+}
+
+.mockup-body {
+  padding: 20px;
+}
+
+.mockup-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  color: #64748b;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.stat-val {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+}
+
+.stat-change {
+  font-size: 0.6rem;
+  color: var(--success);
+  margin-top: 2px;
+}
+
+.mockup-chart {
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 12px;
+}
+
+.chart-label {
+  font-size: 0.65rem;
+  color: #64748b;
+  margin-bottom: 10px;
+}
+
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 60px;
+}
+
+.bar {
+  flex: 1;
+  background: linear-gradient(to top, var(--primary), #60a5fa);
+  border-radius: 3px 3px 0 0;
+  opacity: 0.8;
+}
+
+.mockup-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.mini-card {
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.mini-label {
+  font-size: 0.6rem;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.mini-bar-wrap {
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.mini-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: var(--primary);
+}
+
+.mini-val {
+  font-size: 0.65rem;
+  color: #94a3b8;
+}
+
+/* ─── LOADER ──────────────────────────────────────── */
+.loader {
+  display: none;
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── STATS BAR ───────────────────────────────────── */
+.stats-bar {
+  background: var(--dark-2);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 20px 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 56px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1;
+}
+
+.stat-desc {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.stats-divider {
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,0.08);
+}
+
+/* ─── FEATURES ───────────────────────────────────── */
+.features {
+  padding: 96px 64px;
+  background: var(--surface);
+}
+
+.section-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+}
+
+.section-sub {
+  color: var(--text-muted);
+  font-size: 1rem;
+  max-width: 500px;
+  line-height: 1.7;
+  margin-bottom: 56px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-dark);
+}
+
+.feature-icon {
+  width: 44px; height: 44px;
+  background: var(--primary-light);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.feature-card h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.feature-card p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ─── HOW IT WORKS ───────────────────────────────── */
+.how {
+  padding: 96px 64px;
+  background: var(--bg);
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 56px;
+  position: relative;
+}
+
+.steps::before {
+  content: '';
+  position: absolute;
+  top: 22px;
+  left: calc(16.67% + 22px);
+  width: calc(66.67% - 44px);
+  height: 1px;
+  background: var(--border);
+}
+
+.step {
+  text-align: center;
+  position: relative;
+}
+
+.step-num {
+  width: 44px; height: 44px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0 auto 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.step h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.step p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ─── CTA ─────────────────────────────────────────── */
+.cta {
+  background: var(--dark);
+  padding: 96px 64px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px; height: 400px;
+  background: radial-gradient(ellipse, rgba(37,99,235,0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cta h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.cta p {
+  color: #94a3b8;
+  font-size: 1rem;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.btn-white {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 32px;
+  background: white;
+  color: var(--dark);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s;
+  position: relative;
+}
+
+.btn-white:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(255,255,255,0.15);
+}
+
+/* ─── FOOTER ──────────────────────────────────────── */
+footer {
+  background: var(--dark);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 48px 64px 32px;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-brand p {
+  color: #64748b;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  margin-top: 12px;
+  max-width: 240px;
+}
+
+.footer-col h4 {
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.footer-col a {
+  display: block;
+  color: #64748b;
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  transition: color 0.2s;
+}
+
+.footer-col a:hover {
+  color: #94a3b8;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-bottom p {
+  color: #475569;
+  font-size: 0.8rem;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 8px;
+}
+
+.social-btn {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none;
+}
+
+.social-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────── */
+@media (max-width: 960px) {
+  .navbar { padding: 0 24px; }
+  .hero { grid-template-columns: 1fr; padding: 64px 24px; gap: 48px; }
+  .hero-visual { order: -1; }
+  .stats-bar { padding: 20px 24px; gap: 24px; flex-wrap: wrap; }
+  .features, .how, .cta { padding: 64px 24px; }
+  .steps { grid-template-columns: 1fr; gap: 32px; }
+  .steps::before { display: none; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; padding: 0 24px; }
+  footer { padding: 48px 24px 24px; }
+}
+
+@media (max-width: 640px) {
+  .nav-links a:not(.nav-cta) { display: none; }
+  .mockup-stats { grid-template-columns: repeat(3, 1fr); }
+  .footer-top { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+  .stats-bar { gap: 16px; }
+  .stats-divider { display: none; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <a href="/" class="logo">Insight<span>ify</span></a>
+  <nav class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="/dashboard" class="nav-cta">Dashboard</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      AI-powered analytics platform
+    </div>
+
+    <h1 class="hero-title">
+      Turn raw data into<br>
+      <span class="accent">actionable insights</span>
+    </h1>
+
+    <p class="hero-sub">
+      Upload any CSV or Excel file and instantly get AI-generated dashboards,
+      predictions, and visualisations — no code required.
+    </p>
+
+    <form action="/upload" method="POST" enctype="multipart/form-data" onsubmit="handleSubmit(event)">
+
+      <div class="upload-zone" id="dropZone">
+        <input type="file" name="file" accept=".csv,.xlsx,.xls" id="fileInput" required>
+
+        <div class="upload-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+
+        <h3>Drop your dataset here</h3>
+        <p>or <span>browse files</span> to upload</p>
+        <p id="fileName" class="file-name"></p>
+      </div>
+
+      <div class="upload-formats">
+        <span class="format-tag">CSV</span>
+        <span class="format-tag">XLSX</span>
+        <span class="format-tag">XLS</span>
+        <span style="color:#475569;font-size:0.7rem;">Up to 50MB</span>
+      </div>
+
+      <br>
+
+      <button type="submit" class="btn-primary" id="submitBtn">
+        <span id="btnText">Analyse Dataset</span>
+        <div class="loader" id="loader"></div>
+        <svg id="btnIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+
+    </form>
+  </div>
+
+  <!-- DASHBOARD MOCKUP -->
+  <div class="hero-visual">
+    <div class="dashboard-mockup">
+      <div class="mockup-topbar">
+        <div class="mockup-dot" style="background:#ef4444"></div>
+        <div class="mockup-dot" style="background:#f59e0b"></div>
+        <div class="mockup-dot" style="background:#10b981"></div>
+        <span class="mockup-title">Insightify — Sales_Q4.csv</span>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-stats">
+          <div class="stat-card">
+            <div class="stat-label">Total rows</div>
+            <div class="stat-val">12,847</div>
+            <div class="stat-change">▲ 8.2%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Avg. value</div>
+            <div class="stat-val">₹4.2K</div>
+            <div class="stat-change">▲ 3.1%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Accuracy</div>
+            <div class="stat-val">94.7%</div>
+            <div class="stat-change">▲ 1.5%</div>
+          </div>
+        </div>
+        <div class="mockup-chart">
+          <div class="chart-label">Revenue trend — Monthly</div>
+          <div class="chart-bars">
+            <div class="bar" style="height:35%"></div>
+            <div class="bar" style="height:52%"></div>
+            <div class="bar" style="height:44%"></div>
+            <div class="bar" style="height:68%"></div>
+            <div class="bar" style="height:59%"></div>
+            <div class="bar" style="height:75%"></div>
+            <div class="bar" style="height:88%"></div>
+            <div class="bar" style="height:72%"></div>
+            <div class="bar" style="height:95%"></div>
+            <div class="bar" style="height:80%"></div>
+          </div>
+        </div>
+        <div class="mockup-row">
+          <div class="mini-card">
+            <div class="mini-label">Category A</div>
+            <div class="mini-bar-wrap"><div class="mini-bar-fill" style="width:72%"></div></div>
+            <div class="mini-val">72% of total</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-label">Prediction score</div>
+            <div class="mini-bar-wrap"><div class="mini-bar-fill" style="width:91%;background:#10b981"></div></div>
+            <div class="mini-val">91% confident</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-number">10K+</div>
+    <div class="stat-desc">Datasets analysed</div>
+  </div>
+  <div class="stats-divider"></div>
+  <div class="stat-item">
+    <div class="stat-number">94%</div>
+    <div class="stat-desc">Avg. model accuracy</div>
+  </div>
+  <div class="stats-divider"></div>
+  <div class="stat-item">
+    <div class="stat-number">&lt; 30s</div>
+    <div class="stat-desc">Time to first insight</div>
+  </div>
+  <div class="stats-divider"></div>
+  <div class="stat-item">
+    <div class="stat-number">Free</div>
+    <div class="stat-desc">No credit card needed</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-eyebrow">Platform features</div>
+  <h2 class="section-title">Everything you need to understand your data</h2>
+  <p class="section-sub">From raw spreadsheet to production-ready dashboard — Insightify handles it all automatically.</p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+        </svg>
+      </div>
+      <h3>Smart Dashboard</h3>
+      <p>Auto-generated charts and KPI cards the moment your file is uploaded. No configuration needed.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+        </svg>
+      </div>
+      <h3>AI Predictions</h3>
+      <p>Machine learning models trained on your data automatically, with confidence scores and feature importance.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </div>
+      <h3>Instant EDA</h3>
+      <p>Full exploratory data analysis — missing values, correlations, outliers, and distributions in one view.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+      </div>
+      <h3>Data Visualisation</h3>
+      <p>Interactive bar, line, scatter, and heatmap charts — all exportable as PNG or embeddable in reports.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-eyebrow">How it works</div>
+  <h2 class="section-title">Three steps to your first insight</h2>
+  <p class="section-sub">No setup. No account required. Just upload and go.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Upload your file</h3>
+      <p>Drag and drop any CSV or Excel file. Insightify parses it instantly — headers, types, everything.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>AI analyses it</h3>
+      <p>Our models run EDA, detect patterns, and build a prediction pipeline — all in under 30 seconds.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Explore & export</h3>
+      <p>Interact with your dashboard, tweak charts, download the report as PDF, and share the link.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Ready to explore your data?</h2>
+  <p>Upload your first dataset free — no account, no credit card.</p>
+  <button class="btn-white" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="17 8 12 3 7 8"/>
+      <line x1="12" y1="3" x2="12" y2="15"/>
+    </svg>
+    Upload Dataset
+  </button>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="/" class="logo">Insight<span>ify</span></a>
+      <p>AI-powered data analytics for everyone. Upload, analyse, and understand your data in seconds.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#features">Features</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="#how">How it works</a>
+      <a href="#">Pricing</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="#">Documentation</a>
+      <a href="#">API Reference</a>
+      <a href="#">Sample datasets</a>
+      <a href="#">Changelog</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About</a>
+      <a href="#">GitHub</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 Insightify · Built with Flask &amp; Pandas</p>
+    <div class="footer-socials">
+      <!-- GitHub -->
+      <a href="https://github.com/prakarsh-create" class="social-btn" title="GitHub">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+        </svg>
+      </a>
+      <!-- LinkedIn -->
+      <a href="#" class="social-btn" title="LinkedIn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+          <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+        </svg>
+      </a>
+      <!-- Twitter -->
+      <a href="#" class="social-btn" title="Twitter">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const fileName  = document.getElementById('fileName');
+
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) {
+    fileName.textContent = fileInput.files[0].name;
+    fileName.style.display = 'block';
+  }
+});
+
+dropZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropZone.classList.add('dragover');
+});
+
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove('dragover');
+});
+
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    fileInput.files = dt.files;
+    fileName.textContent = file.name;
+    fileName.style.display = 'block';
+  }
+});
+
+function handleSubmit(e) {
+  const btn  = document.getElementById('submitBtn');
+  const text = document.getElementById('btnText');
+  const icon = document.getElementById('btnIcon');
+  const spin = document.getElementById('loader');
+  text.textContent = 'Analysing...';
+  icon.style.display = 'none';
+  spin.style.display = 'block';
+  btn.disabled = true;
+}
+</script>
+
+</body>
+</html>

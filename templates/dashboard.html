@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dataset Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+<style>
+
+/* CARD HOVER + CLICK */
+
+.overview-card{
+    position: relative;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.overview-card:hover{
+    transform: translateY(-5px);
+}
+
+.card-detail{
+    position:absolute;
+    bottom:-80px;
+    left:0;
+    width:100%;
+    background:#111827;
+    color:white;
+    padding:10px;
+    border-radius:8px;
+    font-size:14px;
+    opacity:0;
+    transition:0.3s;
+}
+
+.overview-card:hover .card-detail{
+    opacity:1;
+}
+
+/* COLUMN ANALYSIS CARD */
+
+.analysis-card{
+    background:white;
+    padding:40px;
+    width:380px;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    text-align:center;
+}
+
+.analysis-card h2{
+    margin-bottom:25px;
+    color:#333;
+    font-weight:600;
+}
+
+/* SELECT */
+
+.select-box{
+    width:100%;
+    padding:12px;
+    border-radius:8px;
+    border:1px solid #ddd;
+    font-size:15px;
+    outline:none;
+    transition:0.3s;
+}
+
+.select-box:focus{
+    border-color:#4f6df5;
+    box-shadow:0 0 6px rgba(79,109,245,0.2);
+}
+
+/* BUTTON */
+
+.analyze-btn{
+    margin-top:20px;
+    width:100%;
+    padding:12px;
+    background:#4f6df5;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:500;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.analyze-btn:hover{
+    background:#3b55d4;
+    transform:translateY(-2px);
+}
+.dashboard{
+display:flex;
+height:100vh;
+}
+
+.sidebar{
+width:220px;
+background:#111827;
+color:white;
+padding:30px 20px;
+}
+
+.sidebar h2{
+margin-bottom:30px;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar ul li{
+margin:15px 0;
+}
+
+.sidebar ul li a{
+color:white;
+text-decoration:none;
+font-size:16px;
+}
+
+.sidebar ul li a:hover{
+color:#3b82f6;
+}
+
+.main-content{
+flex:1;
+padding:40px;
+background:#f3f4f6;
+overflow-y:auto;
+}
+</style>
+</head>
+
+<body>
+  
+
+<main class="dashboard-shell">
+
+<header class="dashboard-header">
+
+<div>
+<p class="eyebrow">Automated analytics</p>
+<h1>Dataset Insights</h1>
+<p class="muted">
+Upload a file to get a live preview, summary statistics, and quality checks.
+</p>
+</div>
+
+<a class="btn-outline" href="{{ url_for('index') }}">
+Run another dataset
+</a>
+
+</header>
+
+
+<!-- OVERVIEW CARDS -->
+
+<section class="overview-grid">
+
+<article class="overview-card" onclick="scrollToSection('preview-section')">
+<p class="label">Total Rows</p>
+<p class="value">{{ rows }}</p>
+<p class="muted">Click to view dataset preview</p>
+</article>
+
+<article class="overview-card" onclick="scrollToSection('column-section')">
+<p class="label">Total Columns</p>
+<p class="value">{{ columns }}</p>
+<p class="muted">Click to analyze columns</p>
+</article>
+
+<article class="overview-card" onclick="scrollToSection('preview-section')">
+<p class="label">Previewed Rows</p>
+<p class="value">5</p>
+<p class="muted">Click to see dataset preview</p>
+</article>
+
+<article class="overview-card" onclick="scrollToSection('missing-section')">
+<p class="label">Missing Columns</p>
+<p class="value">{{ missing | length }}</p>
+<p class="muted">Click to view missing values</p>
+</article>
+
+</section>
+
+
+<!-- PREVIEW SECTION -->
+
+<section class="data-section" id="preview-section">
+
+<div class="data-section__title">
+<h2>Preview</h2>
+<p class="muted">First five rows of your uploaded file</p>
+</div>
+
+<div class="table-card preview-table">
+{{ head | safe }}
+</div>
+
+</section>
+
+
+<!-- SUMMARY SECTION -->
+
+<section class="data-section" id="summary-section">
+
+<div class="data-section__title">
+<h2>Summary</h2>
+<p class="muted">
+Descriptive statistics computed by pandas describe()
+</p>
+</div>
+
+<div class="table-card summary-table">
+{{ summary | safe }}
+</div>
+
+</section>
+
+
+<!-- MISSING VALUES SECTION -->
+
+<section class="data-section" id="missing-section">
+
+<div class="data-section__title">
+<h2>Missing Values</h2>
+<p class="muted">Counts of null values per column</p>
+</div>
+
+<div class="missing-card">
+<ul>
+
+{% for col, val in missing.items() %}
+<li>
+<span>{{ col }}</span>
+<strong>{{ val }}</strong>
+</li>
+{% endfor %}
+
+</ul>
+</div>
+
+</section>
+
+
+<!-- COLUMN ANALYSIS -->
+
+<section class="data-section" id="column-section">
+
+<div class="data-section__title">
+<h2>Column Analysis</h2>
+<p class="muted">Select a column to analyze</p>
+</div>
+
+<div class="analysis-card">
+
+<h2>Select Column for Analysis</h2>
+
+<form action="/analyze" method="post">
+
+<select name="column" class="select-box">
+
+{% for col in cols %}
+<option value="{{ col }}">{{ col }}</option>
+{% endfor %}
+
+</select>
+
+<button type="submit" class="analyze-btn">
+Analyze
+</button>
+
+</form>
+
+</div>
+
+</section>
+
+</main>
+
+
+<!-- SMOOTH SCROLL SCRIPT -->
+
+<script>
+
+function scrollToSection(sectionId){
+document.getElementById(sectionId).scrollIntoView({
+behavior:"smooth"
+});
+}
+
+</script>
+
+</body>
+</html>
+```
