@@ -15,6 +15,8 @@ AI/ML Libraries: Pandas, NumPy, Scikit-learn
 
 ⚡ Features
 
+Login Page (Use Password username-admin,password-password)
+
 Upload CSV or Excel datasets for analysis
 
 Interactive dashboard with charts and graphs
